@@ -1,4 +1,4 @@
-import 'package:expense_manager/login_screen.dart';
+import 'package:expense_manager/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {

@@ -363,7 +363,8 @@ class _HomePageState extends State<HomePage> {
           builder: (context, setState) {
             return Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+                  bottom: MediaQuery.of(context).viewInsets.bottom
+              ),
               child: Container(
                 height: 480,
                 width: 360,
@@ -570,7 +571,8 @@ class _HomePageState extends State<HomePage> {
                                       style: const TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.w500,
-                                          color: Colors.black),
+                                          color: Colors.black
+                                      ),
                                       decoration: const InputDecoration(
                                           fillColor: Colors.white,
                                           contentPadding: EdgeInsets.all(4),
@@ -579,7 +581,8 @@ class _HomePageState extends State<HomePage> {
                                             FontAwesomeIcons.calendarAlt,
                                             color: Colors.grey,
                                           ),
-                                          border: InputBorder.none),
+                                          border: InputBorder.none
+                                      ),
                                       onTap: () async {
                                         DateTime? pickedDate =
                                             await showDatePicker(

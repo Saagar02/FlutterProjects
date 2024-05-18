@@ -1,6 +1,6 @@
-import 'package:expense_manager/home_screen.dart';
+import 'package:expense_manager/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_manager/resister_screen.dart';
+import 'package:expense_manager/screens/resister_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
