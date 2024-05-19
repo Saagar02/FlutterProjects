@@ -1,3 +1,5 @@
+import 'package:expense_manager/screens/drawer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,7 +13,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State {
+  //String menubarItem = "Transaction" ;
   List transactionList = [
+    {
+      "category": "Medicine",
+      "description": "Lorem Ipsum is simply dummy text of the",
+      "date": "3 June | 11:50 AM",
+      "amount": "900",
+    },
+    {
+      "category": "Medicine",
+      "description": "Lorem Ipsum is simply dummy text of the",
+      "date": "3 June | 11:50 AM",
+      "amount": "900",
+    },
+    {
+      "category": "Medicine",
+      "description": "Lorem Ipsum is simply dummy text of the",
+      "date": "3 June | 11:50 AM",
+      "amount": "900",
+    },
+    {
+      "category": "Medicine",
+      "description": "Lorem Ipsum is simply dummy text of the",
+      "date": "3 June | 11:50 AM",
+      "amount": "900",
+    },
     {
       "category": "Medicine",
       "description": "Lorem Ipsum is simply dummy text of the",
@@ -52,16 +79,14 @@ class _HomeScreen extends State {
                           const SizedBox(
                             height: 34,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
                               "Date",
                               textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.8),
+                              style: GoogleFonts.poppins(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -105,16 +130,14 @@ class _HomeScreen extends State {
                           const SizedBox(
                             height: 19,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
                               "Amount",
                               textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.8),
+                              style: GoogleFonts.poppins(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -149,16 +172,14 @@ class _HomeScreen extends State {
                           const SizedBox(
                             height: 19,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
                               "Category",
                               textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.8),
+                              style: GoogleFonts.poppins(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -192,16 +213,14 @@ class _HomeScreen extends State {
                           const SizedBox(
                             height: 19,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
                               "Description",
                               textAlign: TextAlign.start,
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.8),
+                              style: GoogleFonts.poppins(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -246,14 +265,15 @@ class _HomeScreen extends State {
                                     color: Color.fromRGBO(14, 161, 125, 1),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(67))),
-                                child: const Align(
+                                child: Align(
                                   alignment: Alignment.center,
                                   child: Text(
                                     "Add",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+                                    style: GoogleFonts.poppins(
+                                      color:const Color.fromRGBO(255, 255, 255, 1),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                  ),
                                   ),
                                 ),
                               ),
@@ -269,14 +289,10 @@ class _HomeScreen extends State {
           });
         });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(
-          Icons.menu,
-        ),
         title: Text(
           "June 2022",
           style: GoogleFonts.poppins(
@@ -291,6 +307,7 @@ class _HomeScreen extends State {
           ),
         ],
       ),
+      drawer: const Sidebar(),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: ListView.builder(
@@ -298,7 +315,7 @@ class _HomeScreen extends State {
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.all(0),
-              child: Container(
+              child: SizedBox(
                 child: Column(
                   children: [
                     Row(

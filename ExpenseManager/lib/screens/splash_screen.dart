@@ -44,7 +44,7 @@ class _SplashScreen extends State<SplashScreen>
               width: 144,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/images/Group 77.png')),
+                    image: AssetImage('assets/images/MoneyBag.png')),
                 shape: BoxShape.circle,
                 color: Color.fromARGB(234, 232, 232, 226),
               ),

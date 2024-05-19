@@ -1,3 +1,5 @@
+import 'package:expense_manager/screens/category_screen.dart';
+import 'package:expense_manager/screens/home_screen.dart';
 import 'package:expense_manager/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +14,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: CategoryScreen(),//SplashScreen(),
     );
   }
 }
