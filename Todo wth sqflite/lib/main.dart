@@ -1,0 +1,97 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:todo_app_intermediate/model/todomodel.dart';
+import 'package:todo_app_intermediate/screens/todo_app.dart';
+
+dynamic database;
+List<ToDoModelClass> tasksFromDB = [];
+
+void main() async {
+  log("In main");
+  WidgetsFlutterBinding.ensureInitialized();
+  log("after EnsureDB");
+  database = openDatabase(
+    join(await getDatabasesPath(), 'ToDoDB.db'),
+    version: 1,
+    onCreate: (db, version) {
+      db.execute(
+        '''
+        CREATE TABLE TaskTable(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT,
+          description TEXT,
+          date TEXT,
+          category TEXT,
+          completed INTEGER
+        )
+      ''',
+      );
+    },
+  );
+  log("After openDatabase");
+  tasksFromDB = await getTasks();
+  log("End main");
+  runApp(const MainApp());
+}
+
+Future getTasks() async {
+  final localDB = await database;
+  List<Map<String, dynamic>> listOfMap = await localDB.query('TaskTable');
+
+  return List.generate(
+    listOfMap.length,
+    (index) {
+      return ToDoModelClass(
+          id: listOfMap[index]['id'],
+          title: listOfMap[index]['title'],
+          description: listOfMap[index]['description'],
+          date: listOfMap[index]['date'],
+          category: listOfMap[index]['category'],
+          completed: listOfMap[index]['completed']);
+    },
+  );
+}
+
+Future insertTask(ToDoModelClass obj) async {
+  log("in insertTask");
+  final localDB = await database;
+  await localDB.insert(
+    'TaskTable',
+    obj.taskMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+Future deleteTasks(int? id) async {
+  final localDB = await database;
+  await localDB.delete(
+    'TaskTable',
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+}
+
+Future<void> updateTask(ToDoModelClass newObj) async {
+  final db = await database;
+  await db.update(
+    'TaskTable',
+    newObj.taskMap(),
+    where: 'id = ?',
+    whereArgs: [newObj.id],
+  );
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ToDoApp(),
+    );
+  }
+}
