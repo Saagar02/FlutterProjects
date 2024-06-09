@@ -815,7 +815,7 @@ class _HomePageState extends State<HomePage> {
                               )),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors
-                                    .transparent, //MaterialStateProperty.all<Color>(const Colors.transparent)//MaterialStateProperty.all<Color>(const Color(0xFF02A7B1))
+                                    .transparent, 
                                 foregroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
                               ),
