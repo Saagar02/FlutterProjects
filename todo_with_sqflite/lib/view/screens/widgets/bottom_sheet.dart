@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_with_sqflite/controller/llist_operations.dart';
 import 'package:todo_with_sqflite/model/todo_model_class.dart';
 
@@ -513,12 +514,12 @@ class ShowSheet {
                               onPressed: () => (setState(
                                 () {
                                   isEdit
-                                      ? ListOperations.submitButton(
+                                      ? Provider.of<ListOperations>(context,listen:false).submitButton(
                                           isEdit,
                                           todoList,
                                           todoObj,
                                         )
-                                      : ListOperations.submitButton(
+                                      : Provider.of<ListOperations>(context,listen: false).submitButton(
                                           isEdit, todoList);
                                   Navigator.of(context).pop();
                                 },

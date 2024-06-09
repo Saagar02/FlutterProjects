@@ -18,7 +18,6 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       itemBuilder: (context, index) {
         return TodoCard(
           index: index,
-          todoList: widget.selectedTodo,
         );
       },
       itemCount: widget.selectedTodo.length,

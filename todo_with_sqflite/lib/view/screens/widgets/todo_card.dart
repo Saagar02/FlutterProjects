@@ -1,26 +1,29 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_with_sqflite/controller/llist_operations.dart';
 import 'package:todo_with_sqflite/model/todo_model_class.dart';
-import 'package:todo_with_sqflite/view/screens/home_screen.dart';
 
 // ignore: must_be_immutable
 class TodoCard extends StatefulWidget {
   final int? index;
   List<ToDoModelClass> todoList = [];
-  TodoCard({super.key, required this.index, required this.todoList});
+  TodoCard({super.key, required this.index});
   @override
-  State<TodoCard> createState() =>
-      _TodoCardState(index: index, todoList: todoList);
+  State<TodoCard> createState() => _TodoCardState(index: index);
 }
 
 class _TodoCardState extends State<TodoCard> {
   int? index;
-  List<ToDoModelClass> todoList = [];
-  _TodoCardState({required this.index, required this.todoList});
+  _TodoCardState({
+    required this.index,
+  });
   @override
   Widget build(BuildContext context) {
+    log("To do card");
     return Slidable(
         actionPane: const SlidableDrawerActionPane(),
         actionExtentRatio: 0.15,
@@ -42,7 +45,10 @@ class _TodoCardState extends State<TodoCard> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          ListOperations.deletToDo(todoList[index!], todoList);
+                          Provider.of<ListOperations>(context, listen: false)
+                              .deletToDo(Provider.of<ListOperations>(context,
+                                      listen: false)
+                                  .selectedTodo[index!]);
                         });
                       },
                       child: const Icon(Icons.delete_outline,
@@ -52,12 +58,16 @@ class _TodoCardState extends State<TodoCard> {
                           ),
                     ),
                     const Spacer(),
-                    todoList[index!].todoStatus != "Deleted"
+                    Provider.of<ListOperations>(context, listen: false)
+                                .todoList[index!]
+                                .todoStatus !=
+                            "Deleted"
                         ? GestureDetector(
                             onTap: () {
                               setState(() {
-                                ListOperations.completeTodo(todoList[index!]);
-                                ListOperations.sortList(todoList);
+                                Provider.of<ListOperations>(context,
+                                        listen: false)
+                                    .completeTodo(index!);
                               });
                             },
                             child: Container(
@@ -69,7 +79,10 @@ class _TodoCardState extends State<TodoCard> {
                                           const Color.fromRGBO(84, 84, 84, 1),
                                       width: 2),
                                 ),
-                                child: todoList[index!].todoStatus ==
+                                child: Provider.of<ListOperations>(context,
+                                                listen: false)
+                                            .todoList[index!]
+                                            .todoStatus ==
                                         "Completed"
                                     ? const Center(
                                         child: Icon(
@@ -101,15 +114,6 @@ class _TodoCardState extends State<TodoCard> {
                 children: [
                   Row(
                     children: [
-                      /*Container(
-                            height: 65,
-                            width: 60,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: image
-                          ),*/
                       const SizedBox(width: 5),
                       Expanded(
                         child: Column(
@@ -124,14 +128,21 @@ class _TodoCardState extends State<TodoCard> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        todoList[index!].title,
+                                        Provider.of<ListOperations>(context,
+                                                listen: false)
+                                            .todoList[index!]
+                                            .title,
                                         maxLines: null,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16,
                                           color: Colors.white,
                                           decoration:
-                                              todoList[index!].todoStatus ==
+                                              Provider.of<ListOperations>(
+                                                              context,
+                                                              listen: false)
+                                                          .todoList[index!]
+                                                          .todoStatus ==
                                                       "Completed"
                                                   ? TextDecoration.lineThrough
                                                   : TextDecoration.none,
@@ -140,7 +151,10 @@ class _TodoCardState extends State<TodoCard> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      todoList[index!].isImportant
+                                      Provider.of<ListOperations>(context,
+                                                  listen: false)
+                                              .todoList[index!]
+                                              .isImportant
                                           ? const Icon(
                                               Icons.star,
                                               color: Colors.yellow,
@@ -150,15 +164,27 @@ class _TodoCardState extends State<TodoCard> {
                                   ),
                                 ),
                                 const Spacer(),
-                                todoList[index!].todoStatus != "Completed"
-                                    ? todoList[index!].todoStatus != "Deleted"
+                                Provider.of<ListOperations>(context,
+                                                listen: false)
+                                            .todoList[index!]
+                                            .todoStatus !=
+                                        "Completed"
+                                    ? Provider.of<ListOperations>(context,
+                                                    listen: false)
+                                                .todoList[index!]
+                                                .todoStatus !=
+                                            "Deleted"
                                         ? GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                ListOperations.editToDo(
-                                                    todoList[index!]);
-                                                ListOperations.sortList(
-                                                    todoList);
+                                                Provider.of<ListOperations>(
+                                                        context,
+                                                        listen: false)
+                                                    .editToDo(Provider.of<
+                                                                ListOperations>(
+                                                            context,
+                                                            listen: false)
+                                                        .selectedTodo[index!]);
                                               });
                                             },
                                             child: const Padding(
@@ -181,10 +207,10 @@ class _TodoCardState extends State<TodoCard> {
                                         : GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                ListOperations.changeTodoList(
-                                                    todoList[index!]);
-                                                ListOperations.sortList(
-                                                    todoList);
+                                                Provider.of<ListOperations>(
+                                                        context,
+                                                        listen: false)
+                                                    .changeTodoList(index!);
                                               });
                                             },
                                             child: const Padding(
@@ -216,13 +242,20 @@ class _TodoCardState extends State<TodoCard> {
                               child: ListView(
                                 children: [
                                   Text(
-                                    todoList[index!].description,
+                                    Provider.of<ListOperations>(context,
+                                            listen: false)
+                                        .todoList[index!]
+                                        .description,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                       color: const Color.fromRGBO(
                                           235, 231, 231, 1),
-                                      decoration: todoList[index!].todoStatus ==
+                                      decoration: Provider.of<ListOperations>(
+                                                      context,
+                                                      listen: false)
+                                                  .todoList[index!]
+                                                  .todoStatus ==
                                               "Completed"
                                           ? TextDecoration.lineThrough
                                           : TextDecoration.none,
@@ -247,7 +280,9 @@ class _TodoCardState extends State<TodoCard> {
                     child: Row(
                       children: [
                         Text(
-                          todoList[index!].time,
+                          Provider.of<ListOperations>(context, listen: false)
+                              .todoList[index!]
+                              .time,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -256,7 +291,9 @@ class _TodoCardState extends State<TodoCard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          todoList[index!].date,
+                          Provider.of<ListOperations>(context, listen: false)
+                              .todoList[index!]
+                              .date,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -271,8 +308,12 @@ class _TodoCardState extends State<TodoCard> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(17),
                           ),
-                          child:
-                              Image(image: AssetImage(todoList[index!].image)),
+                          child: Image(
+                              image: AssetImage(Provider.of<ListOperations>(
+                                      context,
+                                      listen: false)
+                                  .todoList[index!]
+                                  .image)),
                         ),
                       ],
                     ),

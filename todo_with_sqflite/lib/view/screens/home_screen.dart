@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_with_sqflite/controller/llist_operations.dart';
 import 'package:todo_with_sqflite/model/todo_model_class.dart';
 import 'package:todo_with_sqflite/view/screens/widgets/bottom_sheet.dart';
@@ -15,24 +18,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isBVisible = true;
-  List<ToDoModelClass> todoList = [];
-  List<ToDoModelClass> selectedTodo = [];
+  //List<ToDoModelClass> todoList = [];
+  //List<ToDoModelClass> selectedTodo = [];
 
   @override
   void initState() {
     super.initState();
-    todoList = ToDoModelClass.todoList;
-    selectedTodo = ListOperations.sortList(todoList);
   }
 
-  void isDeleted() {
-    setState(() {
-      ListOperations.sortList(todoList);
-    });
-  }
+  // void isDeleted() {
+  //   setState(() {
+  //     ListOperations.sortList(todoList);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    log("In HomeScreen");
     return Scaffold(
       appBar: AppBar(
         title:
@@ -62,163 +64,175 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: const BoxDecoration(color: Color.fromRGBO(4, 36, 124, 1)),
         ),
       ),
-      body: NotificationListener<UserScrollNotification>(
-        onNotification: (notification) {
-          if (notification.direction == ScrollDirection.reverse ||
-              notification.direction == ScrollDirection.forward) {
-            setState(() {
-              _isBVisible = false;
-            });
-          }
-          if (notification.direction == ScrollDirection.idle) {
-            setState(() {
-              _isBVisible = true;
-            });
-          }
-          return true;
-        },
-        child: Container(
-          color: const Color.fromRGBO(4, 36, 124, 1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              children: [
-                Container(
-                  height: 40,
-                  color: Colors.transparent,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            ListOperations.listController = "All";
-                            selectedTodo = ListOperations.sortList(todoList);
-                          });
-                        },
-                        child: Text(
-                          "All",
-                          style: TextStyle(
-                              decoration: ListOperations.listController == "All"
-                                  ? TextDecoration.underline
-                                  : null,
-                              decorationColor: Colors
-                                  .white, //const Color.fromRGBO(121, 184, 165, 100),
-                              decorationThickness: 2,
-                              color: Colors
-                                  .white, //const Color.fromARGB(255, 121, 184, 165),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
-                        ),
+      body:
+          // NotificationListener<UserScrollNotification>(
+          //   onNotification: (notification) {
+          //     if (notification.direction == ScrollDirection.reverse ||
+          //         notification.direction == ScrollDirection.forward) {
+          //       setState(() {
+          //         _isBVisible = false;
+          //       });
+          //     }
+          //     if (notification.direction == ScrollDirection.idle) {
+          //       setState(() {
+          //         _isBVisible = true;
+          //       });
+          //     }
+          //     return true;
+          //   },
+          //   child:
+          Container(
+        color: const Color.fromRGBO(4, 36, 124, 1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            children: [
+              Container(
+                height: 40,
+                color: Colors.transparent,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          ListOperations.listController = "All";
+                          Provider.of<ListOperations>(context, listen: false)
+                              .showAll();
+                        });
+                      },
+                      child: Text(
+                        "All",
+                        style: TextStyle(
+                            decoration: ListOperations.listController == "All"
+                                ? TextDecoration.underline
+                                : null,
+                            decorationColor: Colors
+                                .white, //const Color.fromRGBO(121, 184, 165, 100),
+                            decorationThickness: 2,
+                            color: Colors
+                                .white, //const Color.fromARGB(255, 121, 184, 165),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
                       ),
-                      const SizedBox(
-                        width: 10,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      height: 20,
+                      width: 2,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          ListOperations.listController = "Important";
+                          Provider.of<ListOperations>(context, listen: false)
+                              .sortList();
+                        });
+                      },
+                      child: Text(
+                        "Important",
+                        style: TextStyle(
+                            decoration:
+                                ListOperations.listController == "Important"
+                                    ? TextDecoration.underline
+                                    : null,
+                            decorationColor: Colors
+                                .white, //const Color.fromARGB(255, 56, 81, 194),
+                            decorationThickness: 2,
+                            color: Colors
+                                .white, //const Color.fromARGB(255, 56, 81, 194),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
                       ),
-                      Container(
-                        height: 20,
-                        width: 2,
+                    ),
+                    const Spacer(),
+                    DropdownButton<String>(
+                      value: ListOperations.statusController,
+                      elevation: 0,
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
                         color: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        onTap: () {
+                      ), //Color.fromARGB(255, 56, 81, 194),),
+                      iconSize: 24,
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
                           setState(() {
-                            ListOperations.listController = "Important";
-                            selectedTodo = ListOperations.sortList(todoList);
+                            ListOperations.statusController = newValue;
+                            Provider.of<ListOperations>(context, listen: false)
+                                .sortList();
                           });
-                        },
-                        child: Text(
-                          "Important",
-                          style: TextStyle(
-                              decoration:
-                                  ListOperations.listController == "Important"
-                                      ? TextDecoration.underline
-                                      : null,
-                              decorationColor: Colors
-                                  .white, //const Color.fromARGB(255, 56, 81, 194),
-                              decorationThickness: 2,
-                              color: Colors
-                                  .white, //const Color.fromARGB(255, 56, 81, 194),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      const Spacer(),
-                      DropdownButton<String>(
-                        value: ListOperations.statusController,
-                        elevation: 0,
-                        icon: const Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.white,
-                        ), //Color.fromARGB(255, 56, 81, 194),),
-                        iconSize: 24,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 18),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              ListOperations.statusController = newValue;
-                              selectedTodo = ListOperations.sortList(todoList);
-                            });
-                          }
-                        },
-                        items: ["Not Completed", "Completed", "Deleted"]
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(
-                                  color: Colors
-                                      .white, //Color.fromARGB(255, 56, 81, 194),
-                                  fontSize: 15,
+                        }
+                      },
+                      items: ["Not Completed", "Completed", "Deleted"]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(
+                                color: Colors
+                                    .white, //Color.fromARGB(255, 56, 81, 194),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        );
+                      }).toList(),
+                      dropdownColor: const Color.fromRGBO(69, 106, 221, 1),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Provider.of<ListOperations>(context, listen: false)
+                        .selectedTodo
+                        .isEmpty
+                    ? SizedBox(
+                        height: 500,
+                        width: 300,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/TaskDone.png",
+                              fit: BoxFit.contain,
+                            ),
+                            const Text(
+                              "All tasks completed",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.w500),
                             ),
-                          );
-                        }).toList(),
-                        dropdownColor: const Color.fromRGBO(69, 106, 221, 1),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                    child: selectedTodo.isEmpty
-                        ? SizedBox(
-                            height: 500,
-                            width: 300,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/TaskDone.png",
-                                  fit: BoxFit.contain,
-                                ),
-                                const Text(
-                                  "All tasks completed",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          )
-                        : ListView.builder(
+                          ],
+                        ),
+                      )
+                    : Consumer<ListOperations>(
+                        builder: (context, listOperations, child) {
+                          return ListView.builder(
                             itemBuilder: (context, index) {
                               return TodoCard(
                                 index: index,
-                                todoList: selectedTodo,
                               );
                             },
-                            itemCount: selectedTodo.length,
-                          ) //ListViewBuilder(selectedTodo: selectedTodo),
-                    )
-              ],
-            ),
+                            itemCount: Provider.of<ListOperations>(context,
+                                    listen: false)
+                                .selectedTodo
+                                .length,
+                          );
+                        },
+                      ),
+              )
+            ],
           ),
         ),
       ),
+      //),
       floatingActionButton: Visibility(
         visible: _isBVisible,
         child: Padding(
@@ -234,7 +248,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   setState(() {
                     ListOperations.clearController();
-                    ShowSheet.showbottomSheet(false, context, todoList);
+                    ShowSheet.showbottomSheet(
+                        false,
+                        context,
+                        Provider.of<ListOperations>(context, listen: false)
+                            .todoList);
                   });
                 },
                 child: const Center(

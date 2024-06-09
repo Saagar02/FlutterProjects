@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:todo_with_sqflite/model/todo_model_class.dart';
 
-class ListOperations {
+class ListOperations with ChangeNotifier {
   static Color? selectedColor = Colors.yellow.shade200;
   static bool isBVisible = true;
   static bool isImportant = false;
@@ -18,10 +18,110 @@ class ListOperations {
   static final TextEditingController categoryController =
       TextEditingController();
 
-  //static List<ToDoModelClass> todoList = [];
+  final List<ToDoModelClass> _todoList = [
+    ToDoModelClass(
+      title: "Not Complete ToDo 1",
+      description: "Not Complete ToDo 1 description",
+      date: "Feb 11, 2024",
+      time: "12:30 AM",
+      category: "Personal",
+      selectedColor: Colors.yellow.shade200,
+      isImportant: true,
+      isCompleted: false,
+      image: "assets/images/Personal.png",
+      todoStatus: "Not Completed",
+    ),
+    ToDoModelClass(
+      title: "Not Complete ToDo 2",
+      description: "Not Complete ToDo 2 description",
+      date: "Jan 17, 2024",
+      time: "9:20 PM",
+      category: "Work",
+      selectedColor: Colors.green.shade200,
+      isImportant: false,
+      isCompleted: false,
+      image: "assets/images/Work.png",
+      todoStatus: "Not Completed",
+    ),
+    ToDoModelClass(
+      title: "Completed Todo 1",
+      description: "Completed Todo 1 description",
+      date: "Feb 14, 2024",
+      time: "12:30 PM",
+      category: "Home",
+      selectedColor: Colors.red.shade200,
+      isImportant: true,
+      isCompleted: true,
+      image: "assets/images/Home.png",
+      todoStatus: "Completed",
+    ),
+    ToDoModelClass(
+      title: "Completed Todo 2",
+      description: "Completed Todo 2 description ",
+      date: "Jan 9, 2024",
+      time: "9:20 AM",
+      category: "Work",
+      selectedColor: Colors.blue.shade200,
+      isImportant: true,
+      isCompleted: true,
+      image: "assets/images/Work.png",
+      todoStatus: "Completed",
+    ),
+    ToDoModelClass(
+      title: "Completed Todo 3",
+      description: "Completed Todo 3 description",
+      date: "Jan 7, 2024",
+      time: "5:25 PM",
+      category: "Personal",
+      selectedColor: Colors.green.shade200,
+      isImportant: false,
+      isCompleted: true,
+      image: "assets/images/Personal.png",
+      todoStatus: "Completed",
+    ),
+    ToDoModelClass(
+      title: "Deleted Todo 1",
+      description: "Deleted Todo 1 description",
+      date: "Dec 21, 2023",
+      time: "1:30 AM",
+      category: "Work",
+      selectedColor: Colors.green.shade200,
+      isImportant: true,
+      isCompleted: false,
+      image: "assets/images/Work.png",
+      todoStatus: "Deleted",
+    ),
+    ToDoModelClass(
+      title: "Deleted Todo 2",
+      description: "Deleted Todo 2 description",
+      date: "Sept 10, 2023",
+      time: "10:10 PM",
+      category: "Home",
+      selectedColor: Colors.blue.shade200,
+      isImportant: false,
+      isCompleted: true,
+      image: "assets/images/Home.png",
+      todoStatus: "Deleted",
+    ),
+    ToDoModelClass(
+      title: "Deleted Todo 3",
+      description: "Deleted Todo 3 description ",
+      date: "Oct 8, 2023",
+      time: "6:30 AM",
+      category: "Personal",
+      selectedColor: Colors.yellow.shade200,
+      isImportant: false,
+      isCompleted: false,
+      image: "assets/images/Personal.png",
+      todoStatus: "Deleted",
+    ),
+  ];
+  List<ToDoModelClass> _selectedTodo = [];
 
-  static List<ToDoModelClass> sortList(List<ToDoModelClass> todoList) {
-    List<ToDoModelClass> selectedTodo = [];
+  List<ToDoModelClass> get todoList => _todoList;
+  List<ToDoModelClass> get selectedTodo => _selectedTodo;
+
+  void sortList() {
     // if (listController == "All") {
     //   log("In all");
     //   if (statusController == "Not Completed") {
@@ -60,13 +160,13 @@ class ListOperations {
       log("In all");
       if (statusController == "Not Completed") {
         log("In Not completed");
-        selectedTodo = todoList
+        _selectedTodo = todoList
             .where((todo) => todo.todoStatus == "Not Completed")
             .toList();
       }
       if (statusController == "Completed") {
         log("In completed");
-        selectedTodo =
+        _selectedTodo =
             todoList.where((todo) => todo.todoStatus == "Completed").toList();
       }
     }
@@ -83,11 +183,10 @@ class ListOperations {
     //     return item.todoStatus == statusController && item.isImportant == true;
     //   }).toList();
     // }
-    return selectedTodo;
+    notifyListeners();
   }
 
-  static List<ToDoModelClass> submitButton(
-      bool isEdit, List<ToDoModelClass> todoList,
+  List<ToDoModelClass> submitButton(bool isEdit, List<ToDoModelClass> todoList,
       [ToDoModelClass? todoObj]) {
     if (titleController.text.trim().isNotEmpty &&
         descriptionController.text.isNotEmpty &&
@@ -106,7 +205,7 @@ class ListOperations {
           image: "hello",
           todoStatus: "Not Completed",
         ));
-        sortList(todoList);
+        sortList();
       }
     } else {
       todoObj!.title = titleController.text.trim();
@@ -117,7 +216,7 @@ class ListOperations {
       todoObj.selectedColor = selectedColor!;
       todoObj.isImportant = isImportant;
       todoObj.isCompleted = isCompleted;
-      sortList(todoList);
+      sortList();
     }
     clearController();
     return todoList;
@@ -132,53 +231,63 @@ class ListOperations {
     isImportant = false;
   }
 
-  static List deletToDo(
-      ToDoModelClass? toDoObj, List<ToDoModelClass> todoList) {
-    if (toDoObj!.todoStatus == "Deleted") {
-      todoList.remove(toDoObj);
+  void deletToDo(ToDoModelClass obj) {
+    if (obj.todoStatus == "Deleted") {
+      todoList.remove(obj);
     } else {
-      toDoObj.todoStatus = "Deleted";
+      obj.todoStatus = "Deleted";
     }
-    return sortList(todoList);
+    sortList();
+    notifyListeners();
   }
 
-  static void updateImportance(ToDoModelClass toDoObj) {
+  void updateImportance(ToDoModelClass toDoObj) {
     if (toDoObj.isCompleted == false) {
       toDoObj.isImportant == true
           ? toDoObj.isImportant = false
           : toDoObj.isImportant = true;
     }
+    sortList();
+    notifyListeners();
   }
 
-  static void completeTodo(ToDoModelClass toDoObj) {
-    toDoObj.isCompleted == false
-        ? toDoObj.isCompleted = true
-        : toDoObj.isCompleted = false;
-    toDoObj.todoStatus == "Not Completed"
-        ? toDoObj.todoStatus = "Completed"
-        : toDoObj.todoStatus = "Not Completed";
+  void completeTodo(int index) {
+    _selectedTodo[index].isCompleted == false
+        ? _selectedTodo[index].isCompleted = true
+        : _selectedTodo[index].isCompleted = false;
+    _selectedTodo[index].todoStatus == "Not Completed"
+        ? _selectedTodo[index].todoStatus = "Completed"
+        : _selectedTodo[index].todoStatus = "Not Completed";
+    notifyListeners();
   }
 
-  static void changeTodoList(ToDoModelClass toDoObj) {
-    toDoObj.isCompleted
-        ? toDoObj.todoStatus = "Completed"
-        : toDoObj.todoStatus = "Not Completed";
-    toDoObj.isCompleted
-        ? toDoObj.isCompleted = true
-        : toDoObj.isCompleted = false;
+  void changeTodoList(int index) {
+    todoList[index].isCompleted
+        ? todoList[index].todoStatus = "Completed"
+        : todoList[index].todoStatus = "Not Completed";
+    todoList[index].isCompleted
+        ? todoList[index].isCompleted = true
+        : todoList[index].isCompleted = false;
   }
 
-  static void changeListSection(String state) {
+  void changeListSection(String state) {
     listController = state;
     //updateList(todoList, selectedTodo);
   }
 
-  static void editToDo(ToDoModelClass todoObj) {
-    titleController.text = todoObj.title;
-    descriptionController.text = todoObj.description;
-    dateController.text = todoObj.date;
-    timeController.text = todoObj.time;
-    selectedColor = todoObj.selectedColor;
-    categoryController.text = todoObj.category;
+  void editToDo(ToDoModelClass obj) {
+    titleController.text = obj.title;
+    descriptionController.text = obj.description;
+    dateController.text = obj.date;
+    timeController.text = obj.time;
+    selectedColor = obj.selectedColor;
+    categoryController.text = obj.category;
+    notifyListeners();
+  }
+
+  void showAll() {
+    _selectedTodo =
+        todoList.where((obj) => obj.todoStatus != "Deleted").toList();
+    notifyListeners();
   }
 }
