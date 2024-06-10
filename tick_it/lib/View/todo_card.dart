@@ -64,7 +64,10 @@ class _TodoCardState extends State<TodoCard> {
                         ? GestureDetector(
                             onTap: () {
                               Provider.of<TodoProvider>(context, listen: false)
-                                  .completeTodo(index!);
+                                  .completeTodo(Provider.of<TodoProvider>(
+                                          context,
+                                          listen: false)
+                                      .selectedList[index!]);
                               TodoProvider.slidableController.activeState
                                   ?.close();
                             },

@@ -20,13 +20,6 @@ class MyApp extends StatelessWidget {
             create: (context) => TodoProvider(),
           ),
         ],
-        // child: MaterialApp(
-        //   debugShowCheckedModeBanner: false,
-        //   theme: ThemeData(
-        //     textTheme: GoogleFonts.latoTextTheme(
-        //       Theme.of(context).textTheme,
-        //     ),
-        //   ),
         child: const MaterialApp(
           debugShowCheckedModeBanner: false,
           home: HomeScreen(),

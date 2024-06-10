@@ -11,6 +11,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<TodoProvider>(context, listen: false)
+        .selectedList
+        .isEmpty) {
+      Provider.of<TodoProvider>(context, listen: false).initialize();
+    }
     var isBVisible = true;
     return Scaffold(
       appBar: AppBar(
@@ -168,9 +173,10 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Expanded(
-                  child: Provider.of<TodoProvider>(context, listen: false)
-                          .todoList
+                Expanded(child: Consumer<TodoProvider>(
+                    builder: (context, todoProvider, child) {
+                  return Provider.of<TodoProvider>(context, listen: false)
+                          .selectedList
                           .isEmpty
                       ? SizedBox(
                           height: 500,
@@ -192,28 +198,17 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                         )
-                      : Consumer<TodoProvider>(
-                          builder: (context, todoProvider, child) {
-                            if (Provider.of<TodoProvider>(context,
-                                    listen: false)
-                                .selectedList
-                                .isEmpty) {
-                              Provider.of<TodoProvider>(context, listen: false)
-                                  .initialize();
-                            }
-                            return ListView.builder(
-                                itemBuilder: (context, index) {
-                                  return TodoCard(
-                                    index: index,
-                                  );
-                                },
-                                itemCount: Provider.of<TodoProvider>(context,
-                                        listen: false)
-                                    .selectedList
-                                    .length);
+                      : ListView.builder(
+                          itemBuilder: (context, index) {
+                            return TodoCard(
+                              index: index,
+                            );
                           },
-                        ),
-                )
+                          itemCount:
+                              Provider.of<TodoProvider>(context, listen: false)
+                                  .selectedList
+                                  .length);
+                }))
               ],
             ),
           ),

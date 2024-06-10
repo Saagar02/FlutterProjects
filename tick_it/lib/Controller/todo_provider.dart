@@ -133,24 +133,25 @@ class TodoProvider with ChangeNotifier {
       _selectedList = _todoList
           .where((obj) => obj.todoStatus == _statusController)
           .toList();
-    } else {
+    }
+    if (_listController == "Important") {
+
       _selectedList = _todoList
           .where((obj) =>
               obj.todoStatus == _statusController && obj.isImportant == true)
           .toList();
     }
+    notifyListeners();
   }
 
   void setListController(String newValue) {
     _listController = newValue;
     _sortList();
-    notifyListeners();
   }
 
   void setStatusController(String newValue) {
     _statusController = newValue;
     _sortList();
-    notifyListeners();
   }
 
   void initialize() {
@@ -190,7 +191,6 @@ class TodoProvider with ChangeNotifier {
     }
     clearController();
     _sortList();
-    notifyListeners();
   }
 
   static void clearController() {
@@ -209,7 +209,6 @@ class TodoProvider with ChangeNotifier {
       obj.todoStatus = "Deleted";
     }
     _sortList();
-    notifyListeners();
   }
 
   void updateImportance(ToDoModelClass toDoObj) {
@@ -219,17 +218,16 @@ class TodoProvider with ChangeNotifier {
           : toDoObj.isImportant = true;
     }
     //sortList();
-    notifyListeners();
   }
 
-  void completeTodo(int index) {
-    _todoList[index].isCompleted == false
-        ? _todoList[index].isCompleted = true
-        : _todoList[index].isCompleted = false;
-    _todoList[index].todoStatus == "Not Completed"
-        ? _todoList[index].todoStatus = "Completed"
-        : _todoList[index].todoStatus = "Not Completed";
-    notifyListeners();
+  void completeTodo(ToDoModelClass toDoObj) {
+    toDoObj.isCompleted == false
+        ? toDoObj.isCompleted = true
+        : toDoObj.isCompleted = false;
+    toDoObj.todoStatus == "Not Completed"
+        ? toDoObj.todoStatus = "Completed"
+        : toDoObj.todoStatus = "Not Completed";
+    _sortList();
   }
 
   void changeTodoList(int index) {
