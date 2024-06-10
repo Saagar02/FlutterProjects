@@ -1,14 +1,20 @@
+import 'dart:developer';
+import 'dart:js';
 import 'package:flutter/material.dart';
-
-import '../Model/todo_model_class.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:tick_it/Model/todo_model_class.dart';
+import 'package:tick_it/View/bottom_sheet.dart';
 
 class TodoProvider with ChangeNotifier {
   static Color? selectedColor = Colors.yellow.shade200;
   static bool isBVisible = true;
   static bool isImportant = false;
   static bool isCompleted = false;
-  static String listController = "All";
-  static String statusController = "Not Completed";
+  static SlidableController slidableController = SlidableController();
+  String _listController = "All";
+  String get listController => _listController;
+  String _statusController = "Not Completed";
+  String get statusController => _statusController;
   static final TextEditingController titleController = TextEditingController();
   static final TextEditingController descriptionController =
       TextEditingController();
@@ -35,6 +41,17 @@ class TodoProvider with ChangeNotifier {
       date: "Jan 17, 2024",
       time: "9:20 PM",
       category: "Work",
+      selectedColor: Colors.green.shade200,
+      isImportant: false,
+      isCompleted: false,
+      todoStatus: "Not Completed",
+    ),
+    ToDoModelClass(
+      title: "Not Complete ToDo 3",
+      description: "Not Complete ToDo 3 description",
+      date: "Jan 1, 2024",
+      time: "4:20 PM",
+      category: "Home",
       selectedColor: Colors.green.shade200,
       isImportant: false,
       isCompleted: false,
@@ -109,6 +126,38 @@ class TodoProvider with ChangeNotifier {
   ];
   List<ToDoModelClass> get todoList => _todoList;
 
+  List<ToDoModelClass> _selectedList = [];
+  List<ToDoModelClass> get selectedList => _selectedList;
+  void _sortList() {
+    if (_listController == "All") {
+      _selectedList = _todoList
+          .where((obj) => obj.todoStatus == _statusController)
+          .toList();
+    } else {
+      _selectedList = _todoList
+          .where((obj) =>
+              obj.todoStatus == _statusController && obj.isImportant == true)
+          .toList();
+    }
+  }
+
+  void setListController(String newValue) {
+    _listController = newValue;
+    _sortList();
+    notifyListeners();
+  }
+
+  void setStatusController(String newValue) {
+    _statusController = newValue;
+    _sortList();
+    notifyListeners();
+  }
+
+  void initialize() {
+    _selectedList =
+        _todoList.where((obj) => obj.todoStatus == "Not Completed").toList();
+  }
+
   void submitButton(bool isEdit, [ToDoModelClass? todoObj]) {
     if (titleController.text.trim().isNotEmpty &&
         descriptionController.text.isNotEmpty &&
@@ -140,6 +189,7 @@ class TodoProvider with ChangeNotifier {
       //sortList();
     }
     clearController();
+    _sortList();
     notifyListeners();
   }
 
@@ -155,11 +205,10 @@ class TodoProvider with ChangeNotifier {
   void deletToDo(ToDoModelClass obj) {
     if (obj.todoStatus == "Deleted") {
       todoList.remove(obj);
-      todoList.remove(obj);
     } else {
       obj.todoStatus = "Deleted";
     }
-    //sortList();
+    _sortList();
     notifyListeners();
   }
 
@@ -193,23 +242,18 @@ class TodoProvider with ChangeNotifier {
   }
 
   void changeListSection(String state) {
-    listController = state;
+    _listController = state;
     //updateList(todoList, selectedTodo);
   }
 
-  void editToDo(ToDoModelClass obj) {
+  void editToDo(ToDoModelClass obj, BuildContext context) {
     titleController.text = obj.title;
     descriptionController.text = obj.description;
     dateController.text = obj.date;
     timeController.text = obj.time;
     selectedColor = obj.selectedColor;
     categoryController.text = obj.category;
+    ShowSheet.showbottomSheet(true, context, todoList, obj);
     notifyListeners();
   }
-
-  // void showAll() {
-  //   _todoList =
-  //       todoList.where((obj) => obj.todoStatus != "Deleted").toList();
-  //   notifyListeners();
-  // }
 }

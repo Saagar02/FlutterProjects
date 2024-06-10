@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_sqflite/Controller/todo_provider.dart';
-import 'package:todo_with_sqflite/Model/todo_model_class.dart';
+
+import '../Controller/todo_provider.dart';
 
 // ignore: must_be_immutable
 class TodoCard extends StatefulWidget {
   final int? index;
-  List<ToDoModelClass> todoList = [];
+  //List<ToDoModelClass> todoList = [];
   TodoCard({super.key, required this.index});
   @override
   State<TodoCard> createState() => _TodoCardState(index: index);
@@ -25,7 +25,8 @@ class _TodoCardState extends State<TodoCard> {
   Widget build(BuildContext context) {
     return Slidable(
         actionPane: const SlidableDrawerActionPane(),
-        actionExtentRatio: 0.15,
+        actionExtentRatio: 0.1,
+        controller: TodoProvider.slidableController,
         secondaryActions: <Widget>[
           SlideAction(
             color: Colors.transparent,
@@ -46,7 +47,8 @@ class _TodoCardState extends State<TodoCard> {
                         Provider.of<TodoProvider>(context, listen: false)
                             .deletToDo(Provider.of<TodoProvider>(context,
                                     listen: false)
-                                .todoList[index!]);
+                                .selectedList[index!]);
+                        TodoProvider.slidableController.activeState?.close();
                       },
                       child: const Icon(Icons.delete_outline,
                           size: 28,
@@ -56,13 +58,15 @@ class _TodoCardState extends State<TodoCard> {
                     ),
                     const Spacer(),
                     Provider.of<TodoProvider>(context, listen: false)
-                                .todoList[index!]
+                                .selectedList[index!]
                                 .todoStatus !=
                             "Deleted"
                         ? GestureDetector(
                             onTap: () {
                               Provider.of<TodoProvider>(context, listen: false)
                                   .completeTodo(index!);
+                              TodoProvider.slidableController.activeState
+                                  ?.close();
                             },
                             child: Container(
                                 height: 19,
@@ -75,7 +79,7 @@ class _TodoCardState extends State<TodoCard> {
                                 ),
                                 child: Provider.of<TodoProvider>(context,
                                                 listen: false)
-                                            .todoList[index!]
+                                            .selectedList[index!]
                                             .todoStatus ==
                                         "Completed"
                                     ? const Center(
@@ -124,7 +128,7 @@ class _TodoCardState extends State<TodoCard> {
                                       Text(
                                         Provider.of<TodoProvider>(context,
                                                 listen: false)
-                                            .todoList[index!]
+                                            .selectedList[index!]
                                             .title,
                                         maxLines: null,
                                         style: TextStyle(
@@ -134,7 +138,7 @@ class _TodoCardState extends State<TodoCard> {
                                           decoration: Provider.of<TodoProvider>(
                                                           context,
                                                           listen: false)
-                                                      .todoList[index!]
+                                                      .selectedList[index!]
                                                       .todoStatus ==
                                                   "Completed"
                                               ? TextDecoration.lineThrough
@@ -146,7 +150,7 @@ class _TodoCardState extends State<TodoCard> {
                                       ),
                                       Provider.of<TodoProvider>(context,
                                                   listen: false)
-                                              .todoList[index!]
+                                              .selectedList[index!]
                                               .isImportant
                                           ? const Icon(
                                               Icons.star,
@@ -159,12 +163,12 @@ class _TodoCardState extends State<TodoCard> {
                                 const Spacer(),
                                 Provider.of<TodoProvider>(context,
                                                 listen: false)
-                                            .todoList[index!]
+                                            .selectedList[index!]
                                             .todoStatus !=
                                         "Completed"
                                     ? Provider.of<TodoProvider>(context,
                                                     listen: false)
-                                                .todoList[index!]
+                                                .selectedList[index!]
                                                 .todoStatus !=
                                             "Deleted"
                                         ? GestureDetector(
@@ -175,7 +179,8 @@ class _TodoCardState extends State<TodoCard> {
                                                       Provider.of<TodoProvider>(
                                                               context,
                                                               listen: false)
-                                                          .todoList[index!]);
+                                                          .selectedList[index!],
+                                                      context);
                                             },
                                             child: const Padding(
                                               padding: EdgeInsets.symmetric(
@@ -231,7 +236,7 @@ class _TodoCardState extends State<TodoCard> {
                                   Text(
                                     Provider.of<TodoProvider>(context,
                                             listen: false)
-                                        .todoList[index!]
+                                        .selectedList[index!]
                                         .description,
                                     style: TextStyle(
                                       fontSize: 14,
@@ -241,7 +246,7 @@ class _TodoCardState extends State<TodoCard> {
                                       decoration: Provider.of<TodoProvider>(
                                                       context,
                                                       listen: false)
-                                                  .todoList[index!]
+                                                  .selectedList[index!]
                                                   .todoStatus ==
                                               "Completed"
                                           ? TextDecoration.lineThrough
@@ -268,7 +273,7 @@ class _TodoCardState extends State<TodoCard> {
                       children: [
                         Text(
                           Provider.of<TodoProvider>(context, listen: false)
-                              .todoList[index!]
+                              .selectedList[index!]
                               .time,
                           style: const TextStyle(
                             fontSize: 16,
@@ -279,7 +284,7 @@ class _TodoCardState extends State<TodoCard> {
                         const SizedBox(width: 10),
                         Text(
                           Provider.of<TodoProvider>(context, listen: false)
-                              .todoList[index!]
+                              .selectedList[index!]
                               .date,
                           style: const TextStyle(
                             fontSize: 14,
@@ -297,7 +302,7 @@ class _TodoCardState extends State<TodoCard> {
                           ),
                           child: Image(
                               image: AssetImage(
-                                  "assets/images/${Provider.of<TodoProvider>(context, listen: false).todoList[index!].category}.png")),
+                                  "assets/images/${Provider.of<TodoProvider>(context, listen: false).selectedList[index!].category}.png")),
                         ),
                       ],
                     ),
